@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHB Module Portal | Dr. Abdalla Rizk</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f172a;       /* Deep Navy */
+            --secondary: #3b82f6;     /* Bright Blue */
+            --accent: #0ea5e9;        /* Sky Blue */
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --sidebar-width: 280px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        
+        /* English Typography */
+        .en-text { font-family: 'Poppins', sans-serif; direction: ltr; text-align: left; }
+        
+        /* Layout */
+        .sidebar { width: var(--sidebar-width); background: var(--primary); color: white; display: flex; flex-direction: column; transition: all 0.3s ease; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
+        .main-content { flex: 1; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; background: #f1f5f9; }
+
+        /* Sidebar Styling */
+        .brand { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .brand h1 { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 800; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; color: transparent; margin-bottom: 5px; }
+        .brand p { font-size: 0.9rem; color: #94a3b8; }
+        .dev-badge { margin-top: 15px; display: inline-block; padding: 6px 15px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 20px; font-size: 0.85rem; color: #60a5fa; text-decoration: none; transition: 0.3s; }
+        .dev-badge:hover { background: var(--secondary); color: white; }
+
+        .nav-menu { padding: 20px 10px; flex: 1; }
+        .nav-item { margin-bottom: 5px; }
+        .nav-link { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #cbd5e1; text-decoration: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; cursor: pointer; }
+        .nav-link i { font-size: 1.2rem; width: 25px; text-align: center; }
+        .nav-link:hover, .nav-link.active { background: var(--secondary); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); transform: translateX(-5px); }
+
+        /* Top Header */
+        .top-header { background: var(--bg-card); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 10; }
+        .top-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 45px; height: 45px; background: linear-gradient(135deg, var(--secondary), var(--accent)); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-family: 'Poppins'; font-size: 1.2rem; }
+
+        /* Pages */
+        .page { display: none; padding: 40px; animation: slideUp 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Dashboard Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .stat-card { background: var(--bg-card); padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; border-left: 5px solid var(--secondary); }
+        .stat-icon { width: 60px; height: 60px; border-radius: 15px; background: rgba(59, 130, 246, 0.1); color: var(--secondary); display: flex; justify-content: center; align-items: center; font-size: 1.8rem; }
+        .stat-details h4 { font-size: 0.9rem; color: var(--text-light); margin-bottom: 5px; }
+        .stat-details p { font-size: 1.8rem; font-weight: 800; color: var(--primary); font-family: 'Poppins'; }
+
+        /* English Summaries (World-Class Style) */
+        .summary-container { background: var(--bg-card); border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 30px; }
+        .summary-header { border-bottom: 2px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; }
+        .summary-header h1 { color: var(--primary); font-weight: 800; font-size: 2.2rem; margin-bottom: 10px; }
+        .summary-header p { color: var(--text-light); font-size: 1.1rem; }
+        
+        .content-section { margin-bottom: 40px; }
+        .content-section h2 { color: var(--secondary); font-size: 1.5rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--accent); padding-left: 15px; }
+        .content-block { background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        .content-block h3 { color: var(--primary); font-size: 1.2rem; margin-bottom: 15px; font-weight: 700; }
+        .content-list { list-style: none; }
+        .content-list li { margin-bottom: 12px; position: relative; padding-left: 25px; color: #334155; line-height: 1.7; }
+        .content-list li::before { content: '🔹'; position: absolute; left: 0; top: 2px; font-size: 0.9rem; }
+        .highlight { background: rgba(59, 130, 246, 0.1); color: var(--secondary); padding: 2px 8px; border-radius: 5px; font-weight: 600; }
+
+        /* Exam Grid */
+        .exam-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .exam-card { background: var(--bg-card); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.04); transition: all 0.3s ease; position: relative; overflow: hidden; border: 1px solid var(--border-color); }
+        .exam-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1); border-color: var(--secondary); }
+        .exam-icon-wrapper { width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, var(--secondary), var(--accent)); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 2rem; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+        .exam-card h3 { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; font-weight: 800; }
+        .exam-card p { color: var(--text-light); margin-bottom: 25px; font-size: 0.95rem; }
+        .btn-start { display: inline-block; width: 100%; padding: 12px 0; background: var(--bg-body); color: var(--secondary); border: 2px solid var(--secondary); border-radius: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .exam-card:hover .btn-start { background: var(--secondary); color: white; }
+        
+        .exam-card.locked { filter: grayscale(100%); opacity: 0.6; pointer-events: none; }
+        .exam-card.locked .exam-icon-wrapper { background: #94a3b8; box-shadow: none; }
+        .exam-card.completed::before { content: 'Passed'; position: absolute; top: 20px; right: -35px; background: var(--success); color: white; padding: 5px 40px; transform: rotate(45deg); font-weight: bold; font-family: 'Poppins'; font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* Quiz Engine UI */
+        .quiz-wrapper { max-width: 900px; margin: 0 auto; }
+        .progress-bar-container { width: 100%; height: 8px; background: var(--border-color); border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(to right, var(--secondary), var(--accent)); width: 0%; transition: width 0.4s ease; }
+        
+        .question-box { background: var(--bg-card); padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .q-badge { background: rgba(59, 130, 246, 0.1); color: var(--secondary); padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 1rem; }
+        .question-text { font-size: 1.6rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; line-height: 1.4; }
+        
+        .options-grid { display: flex; flex-direction: column; gap: 15px; }
+        .opt-btn { width: 100%; text-align: left; padding: 18px 25px; background: #f8fafc; border: 2px solid var(--border-color); border-radius: 12px; font-size: 1.15rem; font-weight: 500; color: var(--text-main); cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 15px; }
+        .opt-btn:hover { border-color: var(--secondary); background: #eff6ff; transform: translateX(5px); }
+        .opt-btn.correct { background: #f0fdf4; border-color: var(--success); color: #166534; }
+        .opt-btn.wrong { background: #fef2f2; border-color: var(--danger); color: #991b1b; }
+        .opt-btn:disabled { cursor: not-allowed; transform: none; }
+        
+        .explanation-box { display: none; margin-top: 30px; padding: 20px 25px; background: #fffbeb; border-left: 5px solid var(--warning); border-radius: 10px; font-size: 1.1rem; color: #92400e; line-height: 1.6; }
+        .action-footer { display: flex; justify-content: flex-end; margin-top: 30px; }
+        .btn-next { display: none; padding: 15px 40px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-next:hover { background: var(--secondary); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+
+        /* Result Box */
+        .result-box { text-align: center; padding: 50px 20px; background: var(--bg-card); border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        .result-circle { width: 180px; height: 180px; border-radius: 50%; border: 12px solid var(--secondary); margin: 0 auto 30px; display: flex; justify-content: center; align-items: center; font-size: 4rem; font-weight: 900; color: var(--primary); position: relative; }
+        .result-msg { font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; }
+
+        @media (max-width: 992px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; align-items: center; padding: 10px 20px; }
+            .brand { border: none; padding: 10px; text-align: right; }
+            .nav-menu { display: flex; overflow-x: auto; padding: 10px; gap: 10px; }
+            .nav-item { margin: 0; white-space: nowrap; }
+            .page { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h1>NHB Portal</h1>
+            <p>Batch 39 - Assiut Medicine</p>
+            <a href="https://abdallarizk12.github.io" target="_blank" class="dev-badge en-text">
+                <i class="fas fa-code"></i> Dr. Abdalla Rizk
+            </a>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item"><a class="nav-link active" onclick="nav('dashboard')" id="nav-dashboard"><i class="fas fa-chart-pie"></i> <span>لوحة القيادة</span></a></div>
+            <div class="nav-item"><a class="nav-link" onclick="nav('physio')" id="nav-physio"><i class="fas fa-heartbeat"></i> <span>Physiology Notes</span></a></div>
+            <div class="nav-item"><a class="nav-link" onclick="nav('anatomy')" id="nav-anatomy"><i class="fas fa-bone"></i> <span>Anatomy Notes</span></a></div>
+            <div class="nav-item"><a class="nav-link" onclick="nav('exams')" id="nav-exams"><i class="fas fa-laptop-code"></i> <span>100 MCQs Center</span></a></div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Header -->
+        <header class="top-header">
+            <h2 id="page-title-text">لوحة القيادة (Dashboard)</h2>
+            <div class="user-profile">
+                <div style="text-align: left; direction: ltr;">
+                    <h4 style="color: var(--primary); font-family: 'Poppins';">Dr. Abdalla M. Rizk</h4>
+                    <span style="font-size: 0.8rem; color: var(--text-light);">LMS Administrator</span>
+                </div>
+                <div class="avatar">AR</div>
+            </div>
+        </header>
+
+        <!-- 1. Dashboard Page -->
+        <section id="dashboard" class="page active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="stat-details">
+                        <h4>Modules Covered</h4>
+                        <p>2</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-details">
+                        <h4>Exams Passed</h4>
+                        <p id="dash-passed">0/5</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);"><i class="fas fa-database"></i></div>
+                    <div class="stat-details">
+                        <h4>Total Questions</h4>
+                        <p>100</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="summary-container">
+                <h1 style="color: var(--primary); margin-bottom: 15px;">Welcome to the Next-Gen Medical LMS 🚀</h1>
+                <p style="color: var(--text-light); font-size: 1.1rem; line-height: 1.8;">
+                    This platform was exclusively developed for <strong>Batch 39</strong> of Al-Azhar University (Assiut) Faculty of Medicine. It transforms standard PDF lectures into an interactive, world-class learning experience. Review the comprehensive English summaries, then test your knowledge in the progressive 100-MCQ testing center.
+                </p>
+                <button onclick="nav('exams')" style="margin-top: 25px; padding: 12px 30px; background: var(--secondary); color: white; border: none; border-radius: 8px; font-family: 'Poppins'; font-weight: 600; cursor: pointer; font-size: 1.1rem;">Start Testing Engine <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+            </div>
+        </section>
+
+        <!-- 2. Physiology Summary -->
+        <section id="physio" class="page en-text">
+            <div class="summary-container">
+                <div class="summary-header">
+                    <h1>Physiology: Normal Human Body (NHB)</h1>
+                    <p>Comprehensive overview of Homeostasis and Body Fluids.</p>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-sync-alt"></i> 1. Homeostasis</h2>
+                    <div class="content-block">
+                        <h3>Definition & Importance</h3>
+                        <ul class="content-list">
+                            <li><span class="highlight">Definition:</span> The maintenance of a constant internal environment in response to changes in external or internal conditions.</li>
+                            <li><strong>Importance:</strong> Essential for the survival of every cell. It keeps the internal environment within physiological limits. Failure leads to disease, dysfunction, or death.</li>
+                            <li>All body systems share in maintaining homeostasis (e.g., Respiratory system regulates O2/CO2, Kidneys regulate water/electrolytes).</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="content-block">
+                        <h3>Homeostatic Control System Components</h3>
+                        <ul class="content-list">
+                            <li><strong>Sensor (Receptor):</strong> Detects the change or imbalance.</li>
+                            <li><strong>Control Center:</strong> Receives information and determines the appropriate response (e.g., the Brain).</li>
+                            <li><strong>Transmission:</strong> Sends impulses via electrical (nerves) or chemical (hormones) pathways.</li>
+                            <li><strong>Effector:</strong> Executes the response to correct the deviation.</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-block">
+                        <h3>Feedback Mechanisms</h3>
+                        <ul class="content-list">
+                            <li><span class="highlight">Negative Feedback:</span> The end product reduces or inhibits the original stimulus. It is the most common loop. <br><em>Example:</em> High Thyroxine levels inhibit TSH secretion.</li>
+                            <li><span class="highlight">Positive Feedback:</span> The end product increases the original stimulus. Used in emergency or specific short-term situations. <br><em>Examples:</em> Blood clotting cascade (Prothrombin activator), Uterine contractions during labor (Oxytocin), Milk ejection reflex.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-tint"></i> 2. Body Fluids</h2>
+                    <div class="content-block">
+                        <h3>Total Body Water (TBW)</h3>
+                        <ul class="content-list">
+                            <li>Water constitutes 45% to 75% of body weight.</li>
+                            <li><strong>Male Adults:</strong> ~60% Fluids, 40% Solids.</li>
+                            <li><strong>Female Adults:</strong> ~55% Fluids (less water due to higher subcutaneous adipose tissue).</li>
+                            <li><strong>Special Cases:</strong> Fetuses have the highest water content (95%). Old age has decreased water content due to increased adipose tissue.</li>
+                            <li>Water Balance: Water Gain (~2500 ml/day) must equal Water Loss (~2500 ml/day).</li>
+                        </ul>
+                    </div>
+                    <div class="content-block">
+                        <h3>Fluid Compartments (ICF vs ECF)</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+                            <tr style="background: var(--primary); color: white; text-align: left;">
+                                <th style="padding: 15px;">Feature</th>
+                                <th style="padding: 15px;">Intracellular Fluid (ICF)</th>
+                                <th style="padding: 15px;">Extracellular Fluid (ECF)</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;"><strong>Definition & Volume</strong></td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">Inside cells. ~25L (2/3 of TBW).</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">Outside cells. ~17L (1/3 of TBW).</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;"><strong>Main Cation (+)</strong></td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee; color: var(--success); font-weight: bold;">Potassium (K+)</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee; color: var(--secondary); font-weight: bold;">Sodium (Na+)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;"><strong>Main Anion (-)</strong></td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">Phosphates & Proteins</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">Chloride (Cl-)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px;"><strong>pH Level</strong></td>
+                                <td style="padding: 15px;">7.0</td>
+                                <td style="padding: 15px;">7.4</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Anatomy Summary -->
+        <section id="anatomy" class="page en-text">
+            <div class="summary-container">
+                <div class="summary-header">
+                    <h1>Anatomy: Introduction & Skeletal System</h1>
+                    <p>Foundation of Human Anatomy and Bone Structure.</p>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-street-view"></i> 1. Anatomical Position & Terms</h2>
+                    <div class="content-block">
+                        <h3>The Anatomical Position</h3>
+                        <ul class="content-list">
+                            <li>The body is standing erect.</li>
+                            <li>The upper limbs are at the sides.</li>
+                            <li>The face and the <span class="highlight">palms of the hands are facing forwards</span>.</li>
+                            <li>The feet are parallel and close together.</li>
+                            <li><strong>Supine position:</strong> Lying down with face directed upwards.</li>
+                            <li><strong>Prone position:</strong> Lying down with back upwards, face downwards.</li>
+                        </ul>
+                    </div>
+                    <div class="content-block">
+                        <h3>Anatomical Planes</h3>
+                        <ul class="content-list">
+                            <li><strong>Median (Sagittal) Plane:</strong> Divides the body into equal right and left halves.</li>
+                            <li><strong>Parasagittal Plane:</strong> Divides the body into unequal right and left parts.</li>
+                            <li><strong>Coronal (Frontal) Plane:</strong> Divides the body into anterior (front) and posterior (back) parts.</li>
+                            <li><strong>Transverse (Horizontal) Plane:</strong> Divides the body into superior (upper) and inferior (lower) parts.</li>
+                        </ul>
+                    </div>
+                    <div class="content-block">
+                        <h3>Directions & Movements</h3>
+                        <ul class="content-list">
+                            <li><strong>Proximal vs Distal:</strong> Near the trunk vs Away from the trunk.</li>
+                            <li><strong>Medial vs Lateral:</strong> Close to midline vs Away from midline.</li>
+                            <li><strong>Flexion vs Extension:</strong> Bending a joint vs Straightening a joint (Occurs around transverse axis).</li>
+                            <li><strong>Pronation vs Supination:</strong> Medial rotation of forearm vs Lateral rotation of forearm.</li>
+                            <li><strong>Inversion vs Eversion:</strong> Sole of foot faces medially vs Laterally.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2><i class="fas fa-skull"></i> 2. The Skeletal System</h2>
+                    <div class="content-block">
+                        <h3>Skeletal Divisions (206 Bones)</h3>
+                        <ul class="content-list">
+                            <li><span class="highlight">Axial Skeleton:</span> Skull (22 bones), Thoracic cage (Sternum + 12 pairs of Ribs), Vertebral column (33 vertebrae: 7 Cervical, 12 Thoracic, 5 Lumbar, 5 Sacral, 4 Coccygeal).</li>
+                            <li><span class="highlight">Appendicular Skeleton:</span> Pectoral girdle (Clavicle, Scapula), Upper limbs, Pelvic girdle (Hip bones), Lower limbs.</li>
+                            <li><strong>Skull details:</strong> Cranium (8 bones) + Facial skeleton (14 bones). The skull without the mandible is called the Cranium. Newborn skulls contain Fontanelles (Anterior closes at 18-24m, Posterior at 3-6m).</li>
+                        </ul>
+                    </div>
+                    <div class="content-block">
+                        <h3>Bone Classification</h3>
+                        <ul class="content-list">
+                            <li><strong>By Shape:</strong> Long (Femur, Humerus), Short (Carpals), Flat (Scapula, Sternum, Ribs), Irregular (Vertebrae), Sesamoid (Patella - embedded in tendons), Pneumatic (Maxillary, Frontal).</li>
+                            <li><strong>By Structure:</strong> Compact bone (Hard outer layer/cortex), Spongy/Cancellous bone (Inside bones, ends of long bones).</li>
+                            <li><strong>Long Bone Parts:</strong> Epiphysis (ends, red marrow), Diaphysis (shaft, yellow marrow, surrounded by periosteum), Epiphyseal plate (responsible for growth in length). Main blood supply is the <strong>Nutrient Artery</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Exams Center (Grid) -->
+        <section id="exams" class="page">
+            <div class="summary-container" style="background: transparent; box-shadow: none; padding: 0;">
+                <div class="summary-header">
+                    <h1 class="en-text">100 MCQs Testing Center</h1>
+                    <p class="en-text">Progressive testing engine. Pass an exam with at least 50% (10/20) to unlock the next level.</p>
+                </div>
+                <div class="exam-grid" id="exam-grid-container">
+                    <!-- JS will populate the 5 exams here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Quiz Engine Interface -->
+        <section id="quiz-view" class="page en-text">
+            <div class="quiz-wrapper">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                
+                <div class="question-box">
+                    <div class="q-header">
+                        <span class="q-badge" id="exam-title-badge">Exam 01</span>
+                        <span style="font-weight: 800; color: var(--text-light);" id="q-counter">Q: 1/20</span>
+                    </div>
+                    
+                    <div class="question-text" id="q-text">Loading question...</div>
+                    <div class="options-grid" id="opt-container"></div>
+                    <div class="explanation-box" id="exp-box"></div>
+                    
+                    <div class="action-footer">
+                        <button class="btn-next" id="btn-next" onclick="handleNext()">Next Question <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Result Interface -->
+        <section id="result-view" class="page en-text">
+            <div class="quiz-wrapper">
+                <div class="result-box">
+                    <h2 style="font-size: 2.5rem; color: var(--primary); margin-bottom: 20px;">Exam Completed!</h2>
+                    <div class="result-circle" id="final-score">0/20</div>
+                    <p class="result-msg" id="result-msg"></p>
+                    <button onclick="nav('exams')" style="padding: 15px 40px; background: var(--secondary); color: white; border: none; border-radius: 10px; font-size: 1.2rem; font-weight: bold; cursor: pointer; font-family: 'Poppins';">Return to Exam Center</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Core Engine Scripts -->
+    <script>
+        // Data: 100 Questions (5 Exams x 20 Questions)
+        // Extracted perfectly from the provided Anatomy & Physiology notes.
+        const db = [
+            // ================= EXAM 1: Physiology - Homeostasis (1-20) =================
+            { q: "What is the definition of Homeostasis?", opts: ["Maintenance of variable external environment", "Stoppage of bleeding", "Maintenance of constant internal environment", "Hemolysis of RBCs"], ans: 2, exp: "Homeostasis is the maintenance of a constant internal environment." },
+            { q: "Which of the following disrupts homeostasis?", opts: ["Nutrition", "Disease", "Exercise", "Oxygen supply"], ans: 1, exp: "If the internal environment exceeds limits, disease or dysfunction occurs." },
+            { q: "Failure of homeostasis leads to:", opts: ["Adaptation", "Death", "Reproduction", "Inflammation"], ans: 1, exp: "Failure of homeostasis can lead to death or severe disease." },
+            { q: "Which system in the body shares in homeostasis?", opts: ["Only Nervous System", "Only Excretory System", "All Body systems", "Only Endocrine System"], ans: 2, exp: "All body systems share in maintaining Homeostasis." },
+            { q: "The control center in homeostasis is usually the:", opts: ["Brain", "Kidney", "Heart", "Liver"], ans: 0, exp: "The Brain typically acts as the main control center for neural regulation." },
+            { q: "Which component of the homeostatic system detects change?", opts: ["Effector", "Control Center", "Sensor (Receptor)", "Afferent pathway"], ans: 2, exp: "Sensors/Detectors recognize deviation and detect change." },
+            { q: "An example of a negative feedback mechanism is:", opts: ["Oxytocin release during labor", "Blood clotting cascade", "Milk ejection reflex", "TSH inhibition by thyroxine"], ans: 3, exp: "Thyroxine inhibiting TSH is a classic negative feedback loop." },
+            { q: "An example of a positive feedback mechanism is:", opts: ["Water balance", "Activation of prothrombin activator", "Temperature regulation", "Blood pressure control"], ans: 1, exp: "Blood clotting (forming prothrombin activator) is positive feedback." },
+            { q: "In negative feedback, the response caused by the feedback is:", opts: ["Opposite to the stimulus", "In the same direction as the stimulus", "Unrelated to the stimulus", "Always fatal"], ans: 0, exp: "The end product reduces or inhibits the initial stimulus (opposite)." },
+            { q: "Positive feedback is most useful during:", opts: ["Daily resting conditions", "Emergency conditions", "Sleep", "Digestion"], ans: 1, exp: "Positive feedback is important especially during emergency conditions." },
+            { q: "Which system helps in the regulation of pH?", opts: ["Respiratory, Blood, and Kidney", "Only Skin", "Only Skeletal muscles", "Only Digestive system"], ans: 0, exp: "Respiratory system, blood, and kidneys help regulate pH." },
+            { q: "Normal body temperature must be maintained at:", opts: ["36.0°C", "37.5°C", "38.5°C", "39.0°C"], ans: 1, exp: "Body temperature must be maintained at 37.5°C." },
+            { q: "Which systems eliminate metabolic wastes?", opts: ["Kidneys and excretory organs", "Heart and lungs", "Brain and spinal cord", "Bones and joints"], ans: 0, exp: "Kidneys and excretory organs eliminate metabolic wastes." },
+            { q: "Hormonal control of nutrient metabolism is managed by:", opts: ["Exocrine glands", "Endocrine glands", "Salivary glands", "Sweat glands"], ans: 1, exp: "Endocrine glands release hormones regulating metabolism." },
+            { q: "Imbalance in water and electrolytes can lead to:", opts: ["Dehydration or water toxicity", "Increased bone density", "Better vision", "Enhanced muscle growth"], ans: 0, exp: "Imbalance causes dehydration or water toxicity." },
+            { q: "Which system supplies nutrients by digestion and absorption?", opts: ["Digestive and circulatory systems", "Nervous system", "Muscular system", "Skeletal system"], ans: 0, exp: "Nutrients are digested and absorbed via the digestive and circulatory systems." },
+            { q: "Dilatation of the uterine cervix stimulating more oxytocin is:", opts: ["Negative feedback", "Positive feedback", "Neutral feedback", "Pathological feedback"], ans: 1, exp: "This is a classic positive feedback loop during labor." },
+            { q: "Which feedback loop is the most common in the body?", opts: ["Positive feedback", "Negative feedback", "Both are equally common", "Neither"], ans: 1, exp: "Most homeostatic mechanisms work via negative feedback." },
+            { q: "The normal pH of arterial blood (ECF) is:", opts: ["6.35-6.45", "7.0", "7.35-7.45", "8.0"], ans: 2, exp: "The pH of ECF must be maintained at a normal value of 7.4 (7.35-7.45)." },
+            { q: "If the pH of ECF drops below 7.4, the condition is called:", opts: ["Alkalosis", "Acidosis", "Homeostasis", "Osmosis"], ans: 1, exp: "pH below 7.4 is Acidosis." },
+
+            // ================= EXAM 2: Physiology - Body Fluids (21-40) =================
+            { q: "What percentage of total body weight is fluid in a normal adult male?", opts: ["40%", "50%", "60%", "75%"], ans: 2, exp: "Fluid part forms 60% of body weight in males." },
+            { q: "Total body water in females is:", opts: ["More than male", "Less than male", "Equal to male", "95%"], ans: 1, exp: "Females have 55% (less than males) because of higher subcutaneous adipose tissue." },
+            { q: "Which person has the highest percentage of total body fluids?", opts: ["Thin adult male", "Obese adult female", "Old age person", "Fetus"], ans: 3, exp: "A Fetus has 95% water." },
+            { q: "Why does water content decrease in old age?", opts: ["Increased muscle mass", "Decreased bone mass", "Increased adipose tissue", "Decreased skin thickness"], ans: 2, exp: "Water content decreases in old age because of increased adipose tissue." },
+            { q: "The ratio of Extracellular Fluid (ECF) to Intracellular Fluid (ICF) is roughly:", opts: ["2:1", "1:2", "1:1", "3:1"], ans: 1, exp: "ECF is 1/3, ICF is 2/3. Ratio is 1:2." },
+            { q: "The largest portion of Extracellular Fluid (ECF) is the:", opts: ["Plasma", "Transcellular fluid", "Interstitial Fluid", "Intracellular fluid"], ans: 2, exp: "Interstitial Fluid is the largest portion (~80% of ECF)." },
+            { q: "Transcellular fluid includes all of the following EXCEPT:", opts: ["Cerebrospinal fluid (CSF)", "Intraocular fluid", "Plasma", "Synovial fluid"], ans: 2, exp: "Plasma is intravascular, not transcellular." },
+            { q: "The main Extracellular cation (+) is:", opts: ["Potassium (K+)", "Calcium (Ca++)", "Magnesium (Mg++)", "Sodium (Na+)"], ans: 3, exp: "Sodium (Na+) is the main extracellular cation." },
+            { q: "The main Intracellular cation (+) is:", opts: ["Sodium (Na+)", "Potassium (K+)", "Chloride (Cl-)", "Calcium (Ca++)"], ans: 1, exp: "Potassium (K+) is the main intracellular cation." },
+            { q: "The main Extracellular anion (-) is:", opts: ["Phosphates", "Proteins", "Chloride (Cl-)", "Bicarbonate"], ans: 2, exp: "Chloride (Cl-) is the main extracellular anion." },
+            { q: "The main Intracellular anion (-) is:", opts: ["Chloride", "Phosphates & proteins", "Bromide", "Iodide"], ans: 1, exp: "Phosphates & proteins are the main intracellular anions." },
+            { q: "The normal pH of Intracellular Fluid (ICF) is:", opts: ["7.4", "7.0", "6.5", "8.0"], ans: 1, exp: "The pH of ICF is 7.0." },
+            { q: "Normal Sodium (Na+) level in ECF is:", opts: ["3.6 to 5.2 mmol/L", "135 to 145 mmol/L", "8.8 to 10.7 mg/dL", "100 to 110 mmol/L"], ans: 1, exp: "Normal Na+ level is 135 to 145 mmol/L." },
+            { q: "Normal Potassium (K+) level in ECF is:", opts: ["135 to 145 mmol/L", "3.6 to 5.2 mmol/L", "8.8 to 10.7 mg/dL", "150 to 160 mmol/L"], ans: 1, exp: "Normal K+ level is 3.6 to 5.2 mmol/L." },
+            { q: "Normal Calcium (Ca++) level is:", opts: ["135 to 145 mmol/L", "3.6 to 5.2 mmol/L", "8.8 to 10.7 mg/dL", "1.0 to 2.0 mg/dL"], ans: 2, exp: "Normal Ca++ level is 8.8 to 10.7 mg/dL." },
+            { q: "Functions of water in the body include all EXCEPT:", opts: ["Regulates body temperature", "Prevents constipation", "Maintains blood pressure", "Produces red blood cells"], ans: 3, exp: "Water does not produce RBCs; it transports nutrients, regulates temp, and lubricates." },
+            { q: "Plasma represents approximately what volume in a normal adult?", opts: ["1 L", "3 L", "8 L", "25 L"], ans: 1, exp: "Plasma volume is roughly 3L (20% of ECF)." },
+            { q: "Water balance means:", opts: ["Water intake > output", "Water intake < output", "Water gain = Water loss", "No water loss"], ans: 2, exp: "Water Balance requires Water gain (~2500 ml) = Water loss (~2500 ml)." },
+            { q: "Which process drives fluid filtration at the arteriolar end of a capillary?", opts: ["Osmotic pressure", "Hydrostatic pressure", "Active transport", "Diffusion"], ans: 1, exp: "Hydrostatic pressure drives filtration of water into tissue spaces." },
+            { q: "What protein is primarily responsible for osmotic (reabsorption) pressure in capillaries?", opts: ["Hemoglobin", "Fibrinogen", "Albumin", "Globulin"], ans: 2, exp: "Albumin creates the pulling force (osmotic pressure) for reabsorption." },
+
+            // ================= EXAM 3: Anatomy - Skeletal System (41-60) =================
+            { q: "How many total bones are in the adult human skeleton?", opts: ["200", "206", "212", "300"], ans: 1, exp: "The adult human skeleton consists of 206 bones." },
+            { q: "The axial skeleton consists of:", opts: ["Skull, thoracic cage, and vertebral column", "Upper and lower limbs", "Pectoral and pelvic girdles", "Only the skull and ribs"], ans: 0, exp: "Axial skeleton = Skull, Thoracic cage, and Vertebral column." },
+            { q: "How many bones make up the skull?", opts: ["14", "22", "24", "33"], ans: 1, exp: "The skull consists of 22 bones (8 cranial + 14 facial)." },
+            { q: "What is the skull called when the mandible is removed?", opts: ["Calvaria", "Cranium", "Facial skeleton", "Brain box"], ans: 1, exp: "The skull without the mandible is called the cranium." },
+            { q: "Which of the following cranial bones is paired?", opts: ["Frontal", "Occipital", "Parietal", "Sphenoid"], ans: 2, exp: "Parietal and Temporal bones are paired." },
+            { q: "Which of the following facial bones is single (unpaired)?", opts: ["Maxilla", "Zygomatic", "Nasal", "Mandible"], ans: 3, exp: "Mandible and Vomer are the only single facial bones." },
+            { q: "At what age does the anterior fontanelle normally close (ossify)?", opts: ["3-6 months", "6-12 months", "18-24 months", "3-5 years"], ans: 2, exp: "The anterior fontanelle ossifies at 18-24 months." },
+            { q: "Which shape describes the anterior fontanelle?", opts: ["Triangular", "Diamond", "Circular", "Square"], ans: 1, exp: "Anterior fontanelle is diamond-shaped." },
+            { q: "True ribs attach directly to the sternum. Which pairs are they?", opts: ["1st to 7th", "8th to 10th", "11th and 12th", "1st to 5th"], ans: 0, exp: "True ribs are the 1st to 7th pairs." },
+            { q: "Which ribs are classified as 'Floating ribs'?", opts: ["1st and 2nd", "8th to 10th", "11th and 12th", "7th and 8th"], ans: 2, exp: "11th and 12th ribs do not attach anteriorly." },
+            { q: "How many cervical vertebrae are in the vertebral column?", opts: ["5", "7", "12", "33"], ans: 1, exp: "There are 7 cervical vertebrae." },
+            { q: "The vertebral column consists of how many total vertebrae?", opts: ["24", "30", "33", "31"], ans: 2, exp: "It is composed of 33 vertebrae (fused into 24 distinct bones)." },
+            { q: "The appendicular skeleton includes all EXCEPT:", opts: ["Femur", "Humerus", "Clavicle", "Sternum"], ans: 3, exp: "The Sternum is part of the thoracic cage (Axial skeleton)." },
+            { q: "In the anatomical position, which forearm bone lies medially?", opts: ["Radius", "Ulna", "Tibia", "Fibula"], ans: 1, exp: "The Ulna is medial, and the Radius is lateral in the forearm." },
+            { q: "In the leg, which bone lies laterally?", opts: ["Femur", "Tibia", "Fibula", "Patella"], ans: 2, exp: "The Fibula is lateral, Tibia is medial in the leg." },
+            { q: "The shoulder girdle is composed of:", opts: ["Clavicle and Scapula", "Hip bones", "Sternum and Ribs", "Radius and Ulna"], ans: 0, exp: "Shoulder girdle = Clavicle (anterior) + Scapula (posterior)." },
+            { q: "How many carpal bones are in the hand?", opts: ["5", "7", "8", "14"], ans: 2, exp: "There are 8 carpal bones in the hand." },
+            { q: "How many tarsal bones are in the foot?", opts: ["5", "7", "8", "14"], ans: 1, exp: "There are 7 tarsal bones in the foot." },
+            { q: "The pelvic girdle consists of:", opts: ["Clavicle and Scapula", "Sacrum and Coccyx", "Two Hip bones", "Femur and Tibia"], ans: 2, exp: "The Pelvic girdle consists of the hip bones (appendicular)." },
+            { q: "Which part of the pelvis belongs to the axial skeleton?", opts: ["Hip bones", "Sacrum + Coccyx", "Femur", "Ilium"], ans: 1, exp: "The posterior part (Sacrum + Coccyx) belongs to the axial skeleton." },
+
+            // ================= EXAM 4: Anatomy - Bone Types & Terms (61-80) =================
+            { q: "Which bone is an example of a Long bone?", opts: ["Carpal", "Sternum", "Femur", "Patella"], ans: 2, exp: "Femur is a long bone." },
+            { q: "Carpal and Tarsal bones are classified as:", opts: ["Long bones", "Short bones", "Flat bones", "Irregular bones"], ans: 1, exp: "They are Short bones." },
+            { q: "The Scapula and Sternum are examples of:", opts: ["Flat bones", "Irregular bones", "Sesamoid bones", "Pneumatic bones"], ans: 0, exp: "Scapula, sternum, and ribs are Flat bones." },
+            { q: "Vertebrae are classified according to shape as:", opts: ["Flat bones", "Short bones", "Irregular bones", "Sesamoid bones"], ans: 2, exp: "Vertebrae and hip bones are Irregular." },
+            { q: "The Patella is an example of a:", opts: ["Pneumatic bone", "Sesamoid bone", "Long bone", "Flat bone"], ans: 1, exp: "The Patella is a Sesamoid bone (embedded in a tendon)." },
+            { q: "Bones surrounding the nose like the Maxillary bone are:", opts: ["Sesamoid bones", "Pneumatic bones", "Short bones", "Irregular bones"], ans: 1, exp: "Pneumatic bones contain air spaces (sinuses)." },
+            { q: "Compact bone is typically found in the:", opts: ["Inner layer of flat bones", "Outer layer (cortex) of all bones", "Only at the ends of long bones", "Only in the skull"], ans: 1, exp: "Compact bone forms the hard outer layer of all bones." },
+            { q: "Spongy (cancellous) bone contains:", opts: ["Yellow marrow only", "Air spaces", "Red bone marrow (in epiphysis)", "No marrow"], ans: 2, exp: "Spongy bone in the epiphysis contains Red marrow." },
+            { q: "The shaft of a long bone is called the:", opts: ["Epiphysis", "Metaphysis", "Diaphysis", "Endosteum"], ans: 2, exp: "The shaft is the Diaphysis." },
+            { q: "Which structure is responsible for the growth of long bones in length?", opts: ["Periosteum", "Diaphysis", "Epiphyseal plate", "Nutrient artery"], ans: 2, exp: "The Epiphyseal plate separates epiphysis from diaphysis and allows length growth." },
+            { q: "What is the main arterial blood supply to a long bone?", opts: ["Epiphyseal artery", "Metaphyseal artery", "Nutrient artery", "Periosteal artery"], ans: 2, exp: "The Nutrient artery is the primary blood supply." },
+            { q: "Skull cap bones develop via which type of ossification?", opts: ["Endochondral (Cartilaginous)", "Membranous", "Mixed", "Pathological"], ans: 1, exp: "Flat bones of the skull develop via Membranous ossification." },
+            { q: "The Clavicle and Mandible develop via:", opts: ["Membranous ossification", "Cartilaginous ossification", "Membrano-cartilaginous (Mixed) ossification", "None"], ans: 2, exp: "They develop partly from membrane and partly from cartilage." },
+            { q: "In the anatomical position, the palms of the hands face:", opts: ["Medially", "Laterally", "Posteriorly", "Forwards (Anteriorly)"], ans: 3, exp: "Palms face forwards in the anatomical position." },
+            { q: "A plane that divides the body into anterior and posterior parts is:", opts: ["Sagittal plane", "Coronal (Frontal) plane", "Transverse plane", "Parasagittal plane"], ans: 1, exp: "Coronal plane divides front (anterior) and back (posterior)." },
+            { q: "A structure situated closer to the midline is called:", opts: ["Lateral", "Proximal", "Medial", "Distal"], ans: 2, exp: "Medial is closer to the midline." },
+            { q: "The term 'Proximal' means:", opts: ["Away from surface", "Away from the trunk", "Near to the trunk", "Closer to the feet"], ans: 2, exp: "Proximal means near to the attachment/trunk." },
+            { q: "If two structures lie on the same side of the body, they are:", opts: ["Contralateral", "Bilateral", "Ipsilateral", "Unilateral"], ans: 2, exp: "Ipsilateral = same side." },
+            { q: "The anterior surface of the hand is termed:", opts: ["Dorsal", "Plantar", "Palmar", "Volar"], ans: 2, exp: "Palmar refers to the anterior surface of the hand." },
+            { q: "A structure that lies away from the surface of the body is:", opts: ["Superficial", "Deep", "External", "Superior"], ans: 1, exp: "Deep means away from the surface." },
+
+            // ================= EXAM 5: Anatomy - Movements & Final Mix (81-100) =================
+            { q: "Bending of a joint is anatomically defined as:", opts: ["Extension", "Abduction", "Flexion", "Adduction"], ans: 2, exp: "Flexion means bending of a joint." },
+            { q: "Movement of a limb away from the midline is termed:", opts: ["Adduction", "Abduction", "Rotation", "Elevation"], ans: 1, exp: "Abduction is moving away from the midline." },
+            { q: "Medial rotation of the forearm is called:", opts: ["Supination", "Inversion", "Eversion", "Pronation"], ans: 3, exp: "Pronation is medial rotation of the forearm." },
+            { q: "Turning the sole of the foot so that it faces medially is:", opts: ["Eversion", "Inversion", "Dorsiflexion", "Plantarflexion"], ans: 1, exp: "Inversion is when the sole faces medially (inwards)." },
+            { q: "Drawing a body part forward (e.g., the mandible) is called:", opts: ["Retraction", "Depression", "Protraction", "Elevation"], ans: 2, exp: "Protraction means drawing forward." },
+            { q: "Flexion and extension occur around which axis?", opts: ["Vertical axis", "Transverse axis", "Anteroposterior axis", "Sagittal axis"], ans: 1, exp: "They occur around the transverse axis." },
+            { q: "Rotation occurs around which axis?", opts: ["Transverse axis", "Vertical axis", "Anteroposterior axis", "Coronal axis"], ans: 1, exp: "Rotation occurs around a vertical axis." },
+            { q: "A circular movement combining flexion, extension, abduction, and adduction is:", opts: ["Pronation", "Supination", "Circumduction", "Eversion"], ans: 2, exp: "Circumduction includes all these movements together." },
+            { q: "Which term means lowering a body part?", opts: ["Elevation", "Protraction", "Retraction", "Depression"], ans: 3, exp: "Depression means lowering a body part." },
+            { q: "The term 'External' refers to a structure that lies:", opts: ["Inside an organ", "Outside an organ or body cavity", "Near the head", "Near the feet"], ans: 1, exp: "External lies outside an organ/cavity." },
+            { q: "Which of the following describes the Supine position?", opts: ["Back directed upwards", "Lying on the side", "Face directed upwards", "Standing erect"], ans: 2, exp: "Supine = lying down with face directed upwards." },
+            { q: "The skull of a newborn differs from an adult by having:", opts: ["Teeth", "Paranasal sinuses", "Fontanelles", "Fused sutures"], ans: 2, exp: "Newborns have fontanelles which eventually ossify." },
+            { q: "The shape of the posterior fontanelle is:", opts: ["Diamond", "Triangular", "Circular", "Oval"], ans: 1, exp: "Posterior fontanelle is triangular and closes at 3-6 months." },
+            { q: "Which of the following bones belongs to the upper limb?", opts: ["Tibia", "Fibula", "Femur", "Humerus"], ans: 3, exp: "Humerus is the arm bone." },
+            { q: "Metacarpals are bones of the:", opts: ["Foot", "Hand", "Skull", "Vertebral column"], ans: 1, exp: "Metacarpals are in the hand, Metatarsals in the foot." },
+            { q: "What covers the shaft of a long bone?", opts: ["Endosteum", "Articular cartilage", "Periosteum", "Compact bone"], ans: 2, exp: "The shaft (diaphysis) is surrounded by a membrane called periosteum." },
+            { q: "Adduction and abduction occur around which axis?", opts: ["Transverse axis", "Anteroposterior axis", "Vertical axis", "Longitudinal axis"], ans: 1, exp: "They occur around the anteroposterior axis." },
+            { q: "The term 'Inferior' is synonymous with:", opts: ["Cranial", "Caudal (towards feet)", "Dorsal", "Ventral"], ans: 1, exp: "Inferior means nearer to the feet (caudal)." },
+            { q: "Fluid in dense cartilage represents what volume of ECF?", opts: ["3 L", "8 L", "1 L", "15 L"], ans: 0, exp: "Fluid in dense cartilage is ~3L." },
+            { q: "Congratulations! You reached Q100. Which principle applies to NHB?", opts: ["Structure has no relation to function", "Anatomy and Physiology are integrated", "Only Pathology matters", "Bones don't bleed"], ans: 1, exp: "Anatomy (structure) and Physiology (function) are perfectly integrated." }
+        ];
+
+        // System State
+        let currentSection = 'dashboard';
+        let activeExam = -1;
+        let qIndex = 0;
+        let score = 0;
+
+        // Navigation (SPA Logic)
+        function nav(targetId) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(targetId).classList.add('active');
+            if (document.getElementById('nav-' + targetId)) {
+                document.getElementById('nav-' + targetId).classList.add('active');
+            }
+            
+            // Update Header Title
+            const titles = {
+                'dashboard': 'لوحة القيادة (Dashboard)',
+                'physio': 'Physiology Module Notes',
+                'anatomy': 'Anatomy Module Notes',
+                'exams': '100 MCQs Testing Center'
+            };
+            if(titles[targetId]) document.getElementById('page-title-text').innerText = titles[targetId];
+
+            if(targetId === 'exams') renderExamsGrid();
+            if(targetId === 'dashboard') updateDashboardStats();
+        }
+
+        // Exam Engine
+        function renderExamsGrid() {
+            const grid = document.getElementById('exam-grid-container');
+            grid.innerHTML = '';
+            
+            // First exam is always unlocked
+            if(!localStorage.getItem('ex_0')) localStorage.setItem('ex_0', 'unlocked');
+
+            for (let i = 0; i < 5; i++) {
+                let status = localStorage.getItem(`ex_${i}`); // 'unlocked' or null
+                let bestScore = localStorage.getItem(`score_${i}`);
+                let passed = bestScore >= 10;
+                
+                let classNames = "exam-card en-text";
+                if (!status) classNames += " locked";
+                if (passed) classNames += " completed";
+
+                let topics = ["Physiology: Homeostasis", "Physiology: Body Fluids", "Anatomy: Skeletal System", "Anatomy: Bone Types & Terms", "Anatomy: Movements & Final Mix"];
+
+                grid.innerHTML += `
+                    <div class="${classNames}">
+                        <div class="exam-icon-wrapper"><i class="fas fa-file-medical-alt"></i></div>
+                        <h3>Exam 0${i+1}</h3>
+                        <p>${topics[i]}</p>
+                        ${bestScore ? `<p style="color:var(--success); font-weight:bold; margin-top:-15px; margin-bottom:15px;">Highest Score: ${bestScore}/20</p>` : ''}
+                        <button class="btn-start" onclick="startQuiz(${i})">${passed ? 'Retake Exam' : 'Start Exam'}</button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateDashboardStats() {
+            let passedCount = 0;
+            for(let i=0; i<5; i++) {
+                if(localStorage.getItem(`score_${i}`) >= 10) passedCount++;
+            }
+            document.getElementById('dash-passed').innerText = `${passedCount}/5`;
+        }
+
+        function startQuiz(examId) {
+            activeExam = examId;
+            qIndex = 0;
+            score = 0;
+            
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.getElementById('quiz-view').classList.add('active');
+            document.getElementById('page-title-text').innerText = `Running Exam 0${examId+1}`;
+            document.getElementById('exam-title-badge').innerText = `NHB Exam 0${examId+1}`;
+            
+            loadQ();
+        }
+
+        function loadQ() {
+            const globalIndex = (activeExam * 20) + qIndex;
+            const qData = db[globalIndex];
+            
+            // Update Progress
+            document.getElementById('q-counter').innerText = `Q: ${qIndex + 1}/20`;
+            const progress = ((qIndex) / 20) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            // Load Text
+            document.getElementById('q-text').innerText = qData.q;
+            
+            const optContainer = document.getElementById('opt-container');
+            optContainer.innerHTML = '';
+            
+            qData.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerHTML = `<span style="font-weight:bold; color:var(--secondary); width:25px;">${String.fromCharCode(65+idx)}.</span> ${opt}`;
+                btn.onclick = () => checkAns(idx, btn, qData);
+                optContainer.appendChild(btn);
+            });
+
+            document.getElementById('exp-box').style.display = 'none';
+            document.getElementById('btn-next').style.display = 'none';
+        }
+
+        function checkAns(selectedIdx, btn, qData) {
+            const allBtns = document.getElementById('opt-container').children;
+            for(let b of allBtns) b.disabled = true;
+
+            if (selectedIdx === qData.ans) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                allBtns[qData.ans].classList.add('correct');
+            }
+
+            const expBox = document.getElementById('exp-box');
+            expBox.innerHTML = `<strong>💡 Explanation:</strong> ${qData.exp}`;
+            expBox.style.display = 'block';
+            
+            document.getElementById('btn-next').style.display = 'inline-block';
+            document.getElementById('progress-bar').style.width = (((qIndex + 1) / 20) * 100) + '%';
+        }
+
+        function handleNext() {
+            qIndex++;
+            if (qIndex < 20) {
+                loadQ();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-view').classList.remove('active');
+            document.getElementById('result-view').classList.add('active');
+            document.getElementById('page-title-text').innerText = "Exam Results";
+            
+            document.getElementById('final-score').innerText = `${score}/20`;
+            
+            // Save Score
+            let oldScore = localStorage.getItem(`score_${activeExam}`);
+            if (!oldScore || score > parseInt(oldScore)) {
+                localStorage.setItem(`score_${activeExam}`, score);
+            }
+
+            const msgBox = document.getElementById('result-msg');
+            if (score >= 10) {
+                msgBox.innerHTML = `<span style="color:var(--success)">Congratulations! You passed the exam.</span>`;
+                // Unlock next
+                if (activeExam < 4) {
+                    localStorage.setItem(`ex_${activeExam + 1}`, 'unlocked');
+                    msgBox.innerHTML += `<br><span style="font-size:1.1rem; color:var(--text-light);"><i class="fas fa-unlock"></i> Exam 0${activeExam+2} is now unlocked!</span>`;
+                }
+            } else {
+                msgBox.innerHTML = `<span style="color:var(--danger)">You need at least 10/20 to pass. Review the summaries and try again.</span>`;
+            }
+            
+            updateDashboardStats();
+        }
+
+        // Initialize System
+        window.onload = () => {
+            updateDashboardStats();
+        };
+    </script>
+</body>
+</html>
